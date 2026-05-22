@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Oficina Técnica - Iniciar Sesión</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 30px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 360px; border-top: 5px solid #2c5aa0; }
+        h2 { color: #2c5aa0; margin-bottom: 20px; font-size: 20px; text-align: center; }
+        label { font-weight: bold; font-size: 11px; color: #555; display: block; margin-top: 15px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-ingresar { background-color: #2c5aa0; color: white; border: none; width: 100%; padding: 12px; margin-top: 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-ingresar:hover { background-color: #1e3d6b; }
+        .error-msg { color: #dc3545; font-size: 12px; margin-top: 10px; text-align: center; }
+        .link-registro { display: block; text-align: center; margin-top: 15px; font-size: 11px; color: #666; text-decoration: none; }
+        .link-registro:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>Sistema de Gestión GLP</h2>
+        {% if error %}<p class="error-msg">{{ error }}</p>{% endif %}
+        <form action="/login" method="POST">
+            <label>USUARIO INSTITUCIONAL:</label>
+            <input type="text" name="usuario" required placeholder="Ej: mlopez">
+            
+            <label>CONTRASEÑA:</label>
+            <input type="password" name="contrasena" required placeholder="••••••••">
+            
+            <button type="submit" class="btn-ingresar">Iniciar Sesión</button>
+        </form>
+        <a href="/registro" class="link-registro">Registrar nuevo usuario técnico</a>
+    </div>
+</body>
+</html>

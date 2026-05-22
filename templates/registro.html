@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Oficina Técnica - Registro de Operador</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .register-card { background: white; padding: 30px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 360px; border-top: 5px solid #28a745; }
+        h2 { color: #28a745; margin-bottom: 20px; font-size: 18px; text-align: center; }
+        label { font-weight: bold; font-size: 11px; color: #555; display: block; margin-top: 15px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-registrar { background-color: #28a745; color: white; border: none; width: 100%; padding: 12px; margin-top: 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-registrar:hover { background-color: #1e7e34; }
+        .error-msg { color: #dc3545; font-size: 12px; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h2>Alta de Usuario Técnico</h2>
+        {% if error %}<p class="error-msg">{{ error }}</p>{% endif %}
+        <form action="/registro" method="POST">
+            <label>NUEVO NOMBRE DE USUARIO:</label>
+            <input type="text" name="usuario" required placeholder="Ej: rgonzalez">
+            
+            <label>CONTRASEÑA DE SEGURIDAD:</label>
+            <input type="password" name="contrasena" required placeholder="Mínimo 8 caracteres">
+            
+            <button type="submit" class="btn-registrar">Crear Usuario</button>
+        </form>
+        <a href="/login" style="display:block; text-align:center; margin-top:15px; font-size:11px; color:#666; text-decoration:none;">Volver al ingreso</a>
+    </div>
+</body>
+</html>

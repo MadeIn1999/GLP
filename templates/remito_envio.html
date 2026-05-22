@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remito de Entrega - Documentación GLP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.1;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 15px;
+        }
+        
+        .remito {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 10px;
+        }
+        
+        .logo-section {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 3px;
+        }
+        
+        .company-subtitle {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .company-info {
+            font-size: 9px;
+            color: #666;
+            line-height: 1.3;
+        }
+        
+        .remito-info {
+            text-align: right;
+            border: 2px solid #2c5aa0;
+            padding: 12px;
+            background-color: #f8f9fa;
+        }
+        
+        .remito-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 8px;
+        }
+        
+        .remito-number {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .date-info {
+            font-size: 10px;
+        }
+        
+        .section {
+            margin-bottom: 12px;
+        }
+        
+        .section-title {
+            background-color: #2c5aa0;
+            color: white;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .info-group {
+            margin-bottom: 8px;
+        }
+        
+        .label {
+            font-weight: bold;
+            font-size: 9px;
+            color: #555;
+            margin-bottom: 2px;
+            display: block;
+        }
+        
+        .field {
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 3px 0;
+            min-height: 15px;
+            background: transparent;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            outline: none;
+        }
+        
+        .field:focus {
+            border-bottom: 2px solid #2c5aa0;
+            background-color: #f8f9fa;
+        }
+        
+        .header-field {
+            border: none;
+            background: transparent;
+            font-family: Arial, sans-serif;
+            outline: none;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        
+        .table th,
+        .table td {
+            border: 1px solid #ccc;
+            padding: 4px;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        .table th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .table-field {
+            border: none;
+            width: 100%;
+            font-size: 12px;
+            background: transparent;
+            outline: none;
+        }
+        
+        .checkbox-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 6px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+        }
+        
+        .checkbox {
+            margin-right: 6px;
+            transform: scale(1.1);
+        }
+        
+        .signatures {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 15px;
+        }
+        
+        .signature-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            background-color: #fafafa;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #333;
+            margin: 15px 0 5px 0;
+            height: 1px;
+        }
+        
+        .signature-field {
+            border: none;
+            border-bottom: 1px solid #333;
+            background: transparent;
+            font-size: 9px;
+            width: 120px;
+            text-align: center;
+            outline: none;
+        }
+        
+        .observations {
+            min-height: 30px;
+            border: 1px solid #ccc;
+            padding: 6px;
+            margin-top: 6px;
+            background-color: #fafafa;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            outline: none;
+            resize: none;
+        }
+        
+        .observations:focus {
+            border: 2px solid #2c5aa0;
+            background-color: white;
+        }
+        
+        .footer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                font-size: 9px;
+            }
+            .remito {
+                box-shadow: none;
+                padding: 8px;
+                margin: 0;
+                max-width: none;
+            }
+            button {
+                display: none !important;
+            }
+            .section {
+                margin-bottom: 8px;
+            }
+            .signatures {
+                margin-top: 10px;
+            }
+            .footer {
+                margin-top: 8px;
+                page-break-inside: avoid;
+            }
+            .header {
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+            }
+            .table th,
+            .table td {
+                padding: 2px;
+                font-size: 7px;
+            }
+            input[type="date"].empty-date {
+                color: transparent;
+            }
+            input[type="date"].empty-date::-webkit-datetime-edit,
+            input[type="date"].empty-date::-webkit-datetime-edit-fields-wrapper,
+            input[type="date"].empty-date::-webkit-datetime-edit-text,
+            input[type="date"].empty-date::-webkit-datetime-edit-year-field,
+            input[type="date"].empty-date::-webkit-datetime-edit-month-field,
+            input[type="date"].empty-date::-webkit-datetime-edit-day-field {
+                color: transparent;
+        }
+        }
+    </style>
+</head>
+<body>
+    <div class="remito">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div><img src="{{ url_for('static', filename='1.png') }}" alt="Logo UTN" style="max-width: 140px;"></div>
+            </div>
+            <div class="logo-section" align="center">
+                <div class="company-name">OFICINA TÉCNICA - UTN</div>
+                <div class="company-subtitle">Facultad Regional Tierra del Fuego</div>
+                <div class="company-info">
+                    Dirección: Islas Malvinas 1650<br>
+                    Tel: 2964 432528 - Int. 163 <br>
+                    Email: oficina.tecnica@frtdf.utn.edu.ar<br>
+                    auditorias-frtdf@utn.edu.ar
+                </div>
+            </div>
+            
+            <div class="remito-info">
+                <div class="remito-title">REMITO DE ENTREGA</div>
+                <div class="remito-number">N° <input type="text" value="R-001-0001" class="header-field" style="font-weight:bold;font-size:12px;width:80px;"></div>
+                <div class="date-info">
+                    Fecha: <input type="date" class="header-field" style="font-size:10px;width:100px;"><br>
+                    Hora: <input type="time" class="header-field" style="font-size:10px;width:70px;"> hs.
+                </div>
+            </div>
+        </div>
+
+        <!-- Datos del Cliente -->
+        <div class="section">
+            <div class="section-title">DATOS DEL CLIENTE</div>
+            <div class="two-columns">
+                <div>
+                    <div class="info-group">
+                        <span class="label">RAZÓN SOCIAL / APELLIDO Y NOMBRE:</span>
+                        <input type="text" class="field" placeholder="Ingrese razón social o nombre">
+                    </div>
+                    
+                    <div class="info-group">
+                        <span class="label">CUIT / CUIL / DNI:</span>
+                        <input type="text" class="field" placeholder="Ingrese CUIT/CUIL/DNI">
+                    </div>
+                    
+                    <div class="info-group">
+                        <span class="label">DIRECCIÓN:</span>
+                        <input type="text" class="field" placeholder="Ingrese dirección">
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="info-group">
+                        <span class="label">LOCALIDAD:</span>
+                        <input type="text" class="field" placeholder="Ingrese localidad">
+                    </div>
+                    
+                    <div class="info-group">
+                        <span class="label">TELÉFONO:</span>
+                        <input type="tel" class="field" placeholder="Ingrese teléfono">
+                    </div>
+                    
+                    <div class="info-group">
+                        <span class="label">EMAIL:</span>
+                        <input type="email" class="field" placeholder="Ingrese email">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentación Entregada -->
+        <div class="section">
+            <div class="section-title">DOCUMENTACIÓN ENTREGADA</div>
+            
+            <div class="checkbox-list">
+                <div class="checkbox-item">
+                    <input type="checkbox" class="checkbox" id="caratula">
+                    <label for="caratula">Carátula de Expediente</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" class="checkbox" id="informe">
+                    <label for="informe">Informe Final</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" class="checkbox" id="certificado">
+                    <label for="certificado">Certificado</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" class="checkbox" id="actas">
+                    <label for="actas">Actas de Inspección</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" class="checkbox" id="listado">
+                    <label for="listado">Listado de Verificación</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalle de Documentos -->
+        <div class="section">
+            <div class="section-title">DETALLE DE DOCUMENTOS</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Legajo</th>
+                        <th>N° Certificado/Código</th>
+                        <th>Fecha Emisión</th>
+                        <th>Validez Hasta</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="date" class="table-field"></td>
+                        <td><input type="text" class="table-field"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="section">
+            <div class="section-title">OBSERVACIONES GENERALES</div>
+            <textarea class="observations"></textarea>
+        </div>
+
+        <!-- Firmas -->
+        <div class="signatures">
+            <div class="signature-box" style="position: relative;">
+                <img src="{{ url_for('static', filename:'Firma_Demian.png') }}" alt=""
+                    alt="Firma Demian"
+                    style="position: absolute; width: 150px; top: 10px; left: 50%; transform: translateX(-50%);">
+
+                <br><br><div class="signature-line"></div>
+                <strong>FIRMA Y SELLO</strong><br>
+                <span style="font-size: 9px;">OFICINA TÉCNICA FRTDF</span><br><br><br>
+                Aclaración: <input type="text" class="signature-field" value="Demian Ferreyra"><br><br>
+                DNI: <input type="text" class="signature-field" value="45.141.950">
+            </div>
+            
+            <div class="signature-box">
+                <br><br><div class="signature-line"></div>
+                <strong>FIRMA CLIENTE</strong><br>
+                <span style="font-size: 9px;">RECIBÍ CONFORME</span><br><br><br>
+                Aclaración: <input type="text" class="signature-field"><br><br>
+                DNI: <input type="text" class="signature-field">
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Este remito certifica la entrega de la documentación técnica correspondiente a la inspección de instalaciones de GLP<br>
+            conforme a las normativas vigentes de la Secretaría de Energía y disposiciones técnicas aplicables.
+        </div>
+    </div>
+
+    <script>
+        // Función de impresión
+        function printRemito() {
+            window.print();
+        }
+
+        // Botón de impresión - solo visible en pantalla
+        document.addEventListener('DOMContentLoaded', function() {
+            const printButton = document.createElement('button');
+            printButton.textContent = 'Imprimir Remito';
+            printButton.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                background: #2c5aa0;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                z-index: 1000;
+                font-size: 11px;
+            `;
+            printButton.onclick = printRemito;
+            
+            // Solo mostrar en pantalla, nunca al imprimir
+            const showButton = () => {
+                printButton.style.display = window.matchMedia('print').matches ? 'none' : 'block';
+            };
+            
+            showButton();
+            window.addEventListener('beforeprint', () => printButton.style.display = 'none');
+            window.addEventListener('afterprint', showButton);
+            
+            document.body.appendChild(printButton);
+
+            // inicializar inputs date de la tabla para que estén "vacíos" visualmente ---
+            const tableDateInputs = document.querySelectorAll('.table input[type="date"], table input[type="date"]');
+            tableDateInputs.forEach(input => {
+                // asegurar valor vacío y marcar con clase que oculta la indicación de formato
+                input.value = '';
+                input.classList.add('empty-date');
+
+                // al cambiar el valor, quitar la clase para mostrar la fecha seleccionada
+                input.addEventListener('change', () => {
+                    if (input.value) input.classList.remove('empty-date');
+                    else input.classList.add('empty-date');
+                });
+
+                // al enfocar también quitar la clase (mejora UX al abrir calendario)
+                input.addEventListener('focus', () => input.classList.remove('empty-date'));
+                // al perder foco, si sigue vacío, volver a marcar como vacío
+                input.addEventListener('blur', () => {
+                    if (!input.value) input.classList.add('empty-date');
+                });
+            });
+        });
+
+        // Función para establecer fecha y hora actual
+        function setCurrentDateTime() {
+            const now = new Date();
+            const dateInput = document.querySelector('input[type="date"]');
+            const timeInput = document.querySelector('input[type="time"]');
+            
+            if (dateInput) {
+                dateInput.value = now.toISOString().split('T')[0];
+            }
+            
+            if (timeInput) {
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                timeInput.value = `${hours}:${minutes}`;
+            }
+        }
+
+        // Auto-completar fecha y hora al cargar
+        document.addEventListener('DOMContentLoaded', setCurrentDateTime);
+    </script>
+</body>
+</html>

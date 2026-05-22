@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Auditorías GLP</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        table { border-collapse: collapse; width: 100%; background: white; margin-top: 20px;}
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        .formulario { background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px;}
+    </style>
+</head>
+<body>
+    <div style="background-color: #2c3e50; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; margin-bottom: 20px;">
+        <span>👤 Operador activo: <strong>{{ usuario_actual }}</strong></span>
+        <a href="/logout" style="color: #ffc107; text-decoration: none; font-weight: bold; font-size: 12px;">🔒 Cerrar Sesión</a>
+    </div>
+    <h2>Recepción de Legajos - Gas Austral</h2>
+    
+    <div class="formulario">
+        <h3>Ingresar Nuevo Legajo</h3>
+        <form action="/nuevo_legajo" method="POST" enctype="multipart/form-data">
+            <input type="text" name="nro_legajo" placeholder="Nro de Legajo" required>
+            <input type="text" name="nombre" placeholder="Razón Social" required>
+            <input type="text" name="revisor" placeholder="Revisor Asignado" required>
+            <input type="file" name="archivo_pdf" accept=".pdf" required>
+            <button type="submit">Cargar Legajo</button>
+        </form>
+    </div>
+
+    <div class="formulario">
+    <h3>Generar Remito de Recepción</h3>
+    <form action="/generar_remito_recepcion" method="POST">
+        <input type="text" name="nuevo_nro_remito" placeholder="Nro de Remito" required>
+        
+        <label for="firmante_rec">Firmante:</label>
+        <select name="firmante" id="firmante_rec">
+            <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
+            <!--- <option value="firma_ruben.png">a</option> -->
+            <option value="tu_firma.png">Tu Firma</option>
+        </select>
+        
+        <button type="submit">Generar Remito de Recepción</button>
+    </form>
+</div>
+
+<div class="formulario">
+    <h3>Generar Remito de Envío (Centro Auditor)</h3>
+    <form action="/generar_remito_envio" method="POST">
+        <input type="text" name="nro_remito_envio" placeholder="Nro de Remito de Salida" required>
+        
+        <label for="firmante_env">Firmante:</label>
+        <select name="firmante" id="firmante_env">
+            <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
+            <!-- <option value="firma_ruben.png">Rubén (Verificador)</option> -->
+        </select>
+        
+        <button type="submit">Generar Remito de Envío</button>
+    </form>
+</div>
+
+    <h3>Seguimiento Interno y Control</h3>
+    <form action="/actualizar_estados" method="POST">
+        <table>
+            <tr>
+                <th>Nro Legajo</th>
+                <th>Obra</th>
+                <th>Revisión</th>
+                <th>Aviso Auditoría</th>
+                <th>Firmas Insertadas</th>
+                <th>Pase a Definitivo</th>
+                <th>Acciones</th>
+            </tr>
+            {% for legajo in legajos %}
+            <tr>
+                <td>{{ legajo.nro_legajo }}</td>
+                <td>{{ legajo.nombre }}</td>
+                
+                <!-- Campos ocultos para enviar el ID -->
+                <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
+                
+                <td style="text-align: center;">
+                    <input type="checkbox" name="revision_{{ legajo.id }}" value="sí" {% if legajo.revision == 'sí' %}checked{% endif %}>
+                </td>
+                <td style="text-align: center;">
+                    <input type="checkbox" name="aviso_{{ legajo.id }}" value="sí" {% if legajo.aviso_auditoria == 'sí' %}checked{% endif %}>
+                </td>
+                <td style="text-align: center;">
+                    <input type="checkbox" name="firmas_{{ legajo.id }}" value="sí" {% if legajo.insercion_firmas == 'sí' %}checked{% endif %}>
+                </td>
+                <td style="text-align: center; background-color: #e8f4f8;">
+                    <input type="checkbox" name="definitivo_{{ legajo.id }}" value="sí" {% if legajo.pase_a_definitivo == 'sí' %}checked{% endif %}>
+                </td>
+                <td style="text-align: center;">
+                    <a href="/editar/{{ legajo.id }}" 
+                    style="color: #007bff; text-decoration: none; font-weight: bold; margin-right: 15px;">
+                    ✏️ Editar
+                    </a>
+                    <a href="/eliminar/{{ legajo.id }}" 
+                    onclick="return confirm('¿Está completamente seguro de eliminar el Legajo N° {{ legajo.nro_legajo }}? Esta acción borrará permanentemente el registro técnico, el informe, el acta y el listado de verificación del servidor.')" 
+                    style="color: #dc3545; text-decoration: none; font-weight: bold;">
+                    🗑️ Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit" style="background-color: #28a745; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">Guardar Estados</button>
+    </form>
+    <h3>Respuesta y Certificación (Buenos Aires)</h3>
+<form action="/registrar_respuesta_ba" method="POST">
+    <table>
+        <tr>
+            <th>Nro Legajo</th>
+            <th>Obra</th>
+            <th>Enviado en Remito</th>
+            <th>Nro. Certificado</th>
+            <th>Estado BA</th>
+        </tr>
+        {% for legajo in legajos %}
+        {% if legajo.nro_remito_envio %} <tr>
+            <td>{{ legajo.nro_legajo }}</td>
+            <td>{{ legajo.nombre }}</td>
+            <td>{{ legajo.nro_remito_envio }}</td>
+            
+            <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
+            
+            <td>
+                <input type="text" name="cert_{{ legajo.id }}" 
+                       value="{{ legajo.nro_certificado or '' }}" 
+                       placeholder="Ingresar N°">
+            </td>
+            <td style="text-align: center;">
+                {% if legajo.devolucion_ba == 'sí' %}
+                    <span style="color: green;">✅ Devuelto</span>
+                {% else %}
+                    <span style="color: orange;">⏳ Pendiente</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    <br>
+    <button type="submit" style="background-color: #2c3e50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+        Registrar Certificados
+    </button>
+</form>
+</body>
+</html>
