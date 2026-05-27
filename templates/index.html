@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Auditorías GLP</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
@@ -16,6 +17,7 @@
         <span>👤 Operador activo: <strong>{{ usuario_actual }}</strong></span>
         <a href="/logout" style="color: #ffc107; text-decoration: none; font-weight: bold; font-size: 12px;">🔒 Cerrar Sesión</a>
     </div>
+    
     <h2>Recepción de Legajos - Gas Austral</h2>
     
     <div class="formulario">
@@ -24,129 +26,190 @@
             <input type="text" name="nro_legajo" placeholder="Nro de Legajo" required>
             <input type="text" name="nombre" placeholder="Razón Social" required>
             <input type="text" name="revisor" placeholder="Revisor Asignado" required>
+            <label style="font-size: 11px; font-weight: bold; color: #555; display: block; margin-top: 10px;">FECHA DE INGRESO:</label>
+            <input type="date" name="fecha_entrada" id="fecha_ingreso_nueva" required style="padding: 5px; margin-top: 2px;">
             <input type="file" name="archivo_pdf" accept=".pdf" required>
             <button type="submit">Cargar Legajo</button>
         </form>
     </div>
 
     <div class="formulario">
-    <h3>Generar Remito de Recepción</h3>
-    <form action="/generar_remito_recepcion" method="POST">
-        <input type="text" name="nuevo_nro_remito" placeholder="Nro de Remito" required>
-        
-        <label for="firmante_rec">Firmante:</label>
-        <select name="firmante" id="firmante_rec">
-            <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
-            <!--- <option value="firma_ruben.png">a</option> -->
-            <option value="tu_firma.png">Tu Firma</option>
-        </select>
-        
-        <button type="submit">Generar Remito de Recepción</button>
-    </form>
-</div>
+        <h3>Generar Remito de Recepción</h3>
+        <form action="/generar_remito_recepcion" method="POST">
+            <input type="text" name="nuevo_nro_remito" placeholder="Nro de Remito" required>
+            
+            <label for="firmante_rec">Firmante:</label>
+            <select name="firmante" id="firmante_rec">
+                <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
+                <option value="tu_firma.png">Tu Firma</option>
+            </select>
+            
+            <button type="submit">Generar Remito de Recepción</button>
+        </form>
+    </div>
 
-<div class="formulario">
-    <h3>Generar Remito de Envío (Centro Auditor)</h3>
-    <form action="/generar_remito_envio" method="POST">
-        <input type="text" name="nro_remito_envio" placeholder="Nro de Remito de Salida" required>
-        
-        <label for="firmante_env">Firmante:</label>
-        <select name="firmante" id="firmante_env">
-            <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
-            <!-- <option value="firma_ruben.png">Rubén (Verificador)</option> -->
-        </select>
-        
-        <button type="submit">Generar Remito de Envío</button>
-    </form>
-</div>
+    <div class="formulario">
+        <h3>Generar Remito de Envío (Centro Auditor)</h3>
+        <form action="/generar_remito_envio" method="POST">
+            <input type="text" name="nro_remito_envio" placeholder="Nro de Remito de Salida" required>
+            
+            <label for="firmante_env">Firmante:</label>
+            <select name="firmante" id="firmante_env">
+                <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
+            </select>
+            
+            <button type="submit">Generar Remito de Envío</button>
+        </form>
+    </div>
 
     <h3>Seguimiento Interno y Control</h3>
+    <input type="text" id="buscar_interno" placeholder="🔍 Buscar por Nro. Legajo o Nombre de Obra..." 
+       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
     <form action="/actualizar_estados" method="POST">
         <table>
-            <tr>
-                <th>Nro Legajo</th>
-                <th>Obra</th>
-                <th>Revisión</th>
-                <th>Aviso Auditoría</th>
-                <th>Firmas Insertadas</th>
-                <th>Pase a Definitivo</th>
-                <th>Acciones</th>
-            </tr>
-            {% for legajo in legajos %}
-            <tr>
-                <td>{{ legajo.nro_legajo }}</td>
-                <td>{{ legajo.nombre }}</td>
-                
-                <!-- Campos ocultos para enviar el ID -->
-                <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
-                
-                <td style="text-align: center;">
-                    <input type="checkbox" name="revision_{{ legajo.id }}" value="sí" {% if legajo.revision == 'sí' %}checked{% endif %}>
-                </td>
-                <td style="text-align: center;">
-                    <input type="checkbox" name="aviso_{{ legajo.id }}" value="sí" {% if legajo.aviso_auditoria == 'sí' %}checked{% endif %}>
-                </td>
-                <td style="text-align: center;">
-                    <input type="checkbox" name="firmas_{{ legajo.id }}" value="sí" {% if legajo.insercion_firmas == 'sí' %}checked{% endif %}>
-                </td>
-                <td style="text-align: center; background-color: #e8f4f8;">
-                    <input type="checkbox" name="definitivo_{{ legajo.id }}" value="sí" {% if legajo.pase_a_definitivo == 'sí' %}checked{% endif %}>
-                </td>
-                <td style="text-align: center;">
-                    <a href="/editar/{{ legajo.id }}" 
-                    style="color: #007bff; text-decoration: none; font-weight: bold; margin-right: 15px;">
-                    ✏️ Editar
-                    </a>
-                    <a href="/eliminar/{{ legajo.id }}" 
-                    onclick="return confirm('¿Está completamente seguro de eliminar el Legajo N° {{ legajo.nro_legajo }}? Esta acción borrará permanentemente el registro técnico, el informe, el acta y el listado de verificación del servidor.')" 
-                    style="color: #dc3545; text-decoration: none; font-weight: bold;">
-                    🗑️ Eliminar
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>Nro Legajo</th>
+                    <th>Obra</th>
+                    <th>Revisión</th>
+                    <th>Aviso Auditoría</th>
+                    <th>Firmas Insertadas</th>
+                    <th>Pase a Definitivo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for legajo in legajos %}
+                <tr>
+                    <td>
+                        <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
+                        {{ legajo.nro_legajo }}
+                    </td>
+                    <td>{{ legajo.nombre }}</td>
+                    
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="revision_{{ legajo.id }}" value="sí" {% if legajo.revision == 'sí' %}checked{% endif %}>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="aviso_{{ legajo.id }}" value="sí" {% if legajo.aviso_auditoria == 'sí' %}checked{% endif %}>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="firmas_{{ legajo.id }}" value="sí" {% if legajo.insercion_firmas == 'sí' %}checked{% endif %}>
+                    </td>
+                    <td style="text-align: center; background-color: #e8f4f8;">
+                        <input type="checkbox" name="definitivo_{{ legajo.id }}" value="sí" {% if legajo.pase_a_definitivo == 'sí' %}checked{% endif %}>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="/editar/{{ legajo.id }}" style="color: #007bff; text-decoration: none; font-weight: bold; margin-right: 15px;">✏️ Editar</a>
+                        <a href="/eliminar/{{ legajo.id }}" onclick="return confirm('¿Está completamente seguro de eliminar el Legajo N° {{ legajo.nro_legajo }}? Esta acción borrará permanentemente el registro técnico, el informe, el acta y el listado de verificación del servidor.')" style="color: #dc3545; text-decoration: none; font-weight: bold;">🗑️ Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
         <br>
         <button type="submit" style="background-color: #28a745; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">Guardar Estados</button>
     </form>
+    
     <h3>Respuesta y Certificación (Buenos Aires)</h3>
-<form action="/registrar_respuesta_ba" method="POST">
-    <table>
-        <tr>
-            <th>Nro Legajo</th>
-            <th>Obra</th>
-            <th>Enviado en Remito</th>
-            <th>Nro. Certificado</th>
-            <th>Estado BA</th>
-        </tr>
-        {% for legajo in legajos %}
-        {% if legajo.nro_remito_envio %} <tr>
-            <td>{{ legajo.nro_legajo }}</td>
-            <td>{{ legajo.nombre }}</td>
-            <td>{{ legajo.nro_remito_envio }}</td>
-            
-            <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
-            
-            <td>
-                <input type="text" name="cert_{{ legajo.id }}" 
-                       value="{{ legajo.nro_certificado or '' }}" 
-                       placeholder="Ingresar N°">
-            </td>
-            <td style="text-align: center;">
-                {% if legajo.devolucion_ba == 'sí' %}
-                    <span style="color: green;">✅ Devuelto</span>
-                {% else %}
-                    <span style="color: orange;">⏳ Pendiente</span>
+    <input type="text" id="buscar_externo" placeholder="🔍 Buscar por Nro. Legajo, Obra o Remito..." 
+       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+    <form action="/registrar_respuesta_ba" method="POST">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nro Legajo</th>
+                    <th>Obra</th>
+                    <th>Enviado en Remito</th>
+                    <th>Nro. Certificado</th>
+                    <th>Estado BA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for legajo in legajos %}
+                {% if legajo.nro_remito_envio %}
+                <tr>
+                    <td>{{ legajo.nro_legajo }}</td>
+                    <td>{{ legajo.nombre }}</td>
+                    <td>{{ legajo.nro_remito_envio }}</td>
+                    
+                    <td>
+                        <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
+                        <input type="text" name="cert_{{ legajo.id }}" value="{{ legajo.nro_certificado or '' }}" placeholder="Ingresar N°">
+                    </td>
+                    <td style="text-align: center;">
+                        {% if legajo.devolucion_ba == 'sí' %}
+                            <span style="color: green;">✅ Devuelto</span>
+                        {% else %}
+                            <span style="color: orange;">⏳ Pendiente</span>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% endif %}
-            </td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </table>
-    <br>
-    <button type="submit" style="background-color: #2c3e50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
-        Registrar Certificados
-    </button>
-</form>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button type="submit" style="background-color: #2c3e50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+            Registrar Certificados
+        </button>
+    </form>
+
+    <script>
+        // Función genérica para filtrar cualquier tabla en tiempo real
+    function laFuncionFiltrar(idBuscador, idTabla) {
+        const input = document.getElementById(idBuscador);
+        const tabla = document.getElementById(idTabla);
+        
+        if (!input || !tabla) return;
+
+        input.addEventListener('keyup', function() {
+            const filtro = input.value.toLowerCase();
+            // Tomamos todas las filas del cuerpo de la tabla (omitimos el encabezado thead)
+            const filas = tabla.getElementsByTxName('tbody')[0].getElementsByTxName('tr');
+
+            for (let i = 0; i < filas.length; i++) {
+                let coincide = false;
+                const celdas = filas[i].getElementsByTxName('td');
+                
+                // Evaluamos el texto de cada celda de la fila actual
+                for (let j = 0; j < celdas.length; j++) {
+                    // Si la celda contiene inputs (como el número de legajo o texto), leemos su valor
+                    const inputInterno = celdas[j].querySelector('input[type="text"]');
+                    let textoCelda = "";
+                    
+                    if (inputInterno) {
+                        textoCelda = inputInterno.value;
+                    } else {
+                        textoCelda = celdas[j].textContent || celdas[j].innerText;
+                    }
+
+                    if (textoCelda.toLowerCase().indexOf(filtro) > -1) {
+                        coincide = true;
+                        break; // Si ya coincide una celda, no hace falta seguir revisando la misma fila
+                    }
+                }
+                
+                // Mostramos u ocultamos la fila según el resultado
+                if (coincide) {
+                    filas[i].style.display = "";
+                } else {
+                    filas[i].style.display = "none";
+                }
+            }
+        });
+    }
+        // Inicializador automático para la fecha actual de carga
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vincula el buscador interno con la tabla interna
+            laFuncionFiltrar('buscar_interno', 'tabla_interno');
+            // Vincula el buscador externo con la tabla externa
+            laFuncionFiltrar('buscar_externo', 'tabla_externo');
+            const fechaInput = document.getElementById('fecha_ingreso_nueva');
+            if (fechaInput && !fechaInput.value) {
+                fechaInput.value = new Date().toISOString().split('T')[0];
+            }
+        });
+    </script>
 </body>
 </html>
