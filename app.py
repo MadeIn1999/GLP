@@ -16,7 +16,6 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    # Tabla de Legajos (existente)
     c.execute('''
         CREATE TABLE IF NOT EXISTS legajos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,15 +113,15 @@ def index():
 
 @app.route('/nuevo_legajo', methods=['POST'])
 def nuevo_legajo():
-    """Recibe los datos del formulario y guarda el PDF."""
+    """Recibe los datos del formulario, incluyendo la fecha elegida, y guarda el PDF."""
     nro_legajo = request.form['nro_legajo']
     nombre = request.form['nombre']
     revisor = request.form['revisor']
-    fecha = datetime.now().strftime("%Y-%m-%d")
+    # MODIFICACIÓN: Tomamos la fecha seleccionada por el usuario en el formulario
+    fecha = request.form['fecha_entrada'] # Aseguramos que el campo de fecha se llene correctamente en el formulario HTML
     archivo = request.files['archivo_pdf']
     
     if archivo:
-        # Guardamos el archivo localmente usando el nro de legajo
         nombre_archivo = f"{nro_legajo}_{archivo.filename}"
         archivo.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo))
 
