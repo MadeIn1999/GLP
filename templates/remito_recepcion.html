@@ -72,11 +72,10 @@
             
             <div class="remito-info">
                 <div class="remito-title">REMITO DE RECEPCIÓN</div>
-                <!-- INYECCIÓN JINJA: Se asigna el número de remito dinámico -->
-                <div class="remito-number">N° <input type="text" value="A-001-0001" class="header-field" style="font-weight:bold;font-size:12px;width:120px;"></div>
+                <div class="remito-number">N° <input type="text" value="{{ nro_remito }}" class="header-field" style="font-weight:bold;font-size:12px;width:120px;"></div>
                 <div class="date-info">
-                    Fecha: <input type="date" class="header-field" style="font-size:10px;width:100px;"><br>
-                    Hora: <input type="time" class="header-field" style="font-size:10px;width:70px;"> hs.
+                Fecha: <input type="date" class="header-field" style="font-size:10px;width:100px;"><br>
+                Hora: <input type="time" class="header-field" style="font-size:10px;width:70px;"> hs.
                 </div>
             </div>
         </div>
