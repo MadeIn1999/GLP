@@ -65,8 +65,7 @@ sistema-def/
 │
 ├── static/                 # Archivos estáticos del sistema
 │   ├── 1.png               # Logo institucional UTN
-│   ├── firma_oficina.png   # Firma digitalizada general
-│   └── firma_ruben.png     # Firma digitalizada del verificador técnico
+│   ├── firma_Demian.png    # Firma digitalizada general
 │
 └── templates/              # Plantillas e interfaces HTML (Vistas)
     ├── login.html          # Pantalla de acceso restringido
