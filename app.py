@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -113,28 +113,50 @@ def index():
 
 @app.route('/nuevo_legajo', methods=['POST'])
 def nuevo_legajo():
-    """Recibe los datos del formulario, incluyendo la fecha elegida, y guarda el PDF."""
     nro_legajo = request.form['nro_legajo']
     nombre = request.form['nombre']
     revisor = request.form['revisor']
-    # MODIFICACIÓN: Tomamos la fecha seleccionada por el usuario en el formulario
-    fecha = request.form['fecha_entrada'] # Aseguramos que el campo de fecha se llene correctamente en el formulario HTML
+    fecha = request.form['fecha_entrada'] 
     archivo = request.files['archivo_pdf']
     
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    
+    c.execute("SELECT id FROM legajos WHERE nro_legajo = ?", (nro_legajo,))
+    existe = c.fetchone()
+    
+    if existe:
+        conn.close()
+        # MENSAJE FLASH DE ERROR
+        flash(f"Error: El legajo {nro_legajo} ya se encuentra registrado.", "error")
+        return redirect(url_for('index'))
+
     if archivo:
         nombre_archivo = f"{nro_legajo}_{archivo.filename}"
         archivo.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo))
 
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
     c.execute('''
         INSERT INTO legajos (fecha_entrada, nro_legajo, nombre, revisor_asignado, recepcion_documentos)
         VALUES (?, ?, ?, ?, 'sí')
     ''', (fecha, nro_legajo, nombre, revisor))
+    
     conn.commit()
     conn.close()
     
+    # MENSAJE FLASH DE ÉXITO
+    flash(f"El legajo {nro_legajo} se cargó correctamente.", "success")
     return redirect(url_for('index'))
+
+def obtener_legajos():
+    """Función auxiliar para leer la tabla de legajos rápidamente."""
+    conn = sqlite3.connect(DB_NAME)
+    try:
+        df = pd.read_sql_query("SELECT * FROM legajos", conn)
+        legajos = df.to_dict('records')
+    except:
+        legajos = []
+    conn.close()
+    return legajos
 
 @app.route('/generar_remito_recepcion', methods=['POST'])
 def generar_remito_recepcion():
@@ -210,26 +232,35 @@ def generar_remito_envio():
 
 @app.route('/registrar_respuesta_ba', methods=['POST'])
 def registrar_respuesta_ba():
-    """Registra el nro de certificado y confirma la devolución desde Bs. As."""
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    
     ids = request.form.getlist('id_legajo')
     
+    hubo_error = False
+    
     for legajo_id in ids:
-        # Capturamos el nro de certificado si se ingresó uno
-        certificado = request.form.get(f'cert_{legajo_id}', '')
-        # Si tiene certificado, marcamos la devolución como 'sí'
-        devuelto = 'sí' if certificado else 'no'
-        
-        c.execute('''
-            UPDATE legajos 
-            SET nro_certificado = ?, devolucion_ba = ?
-            WHERE id = ?
-        ''', (certificado, devuelto, legajo_id))
-        
+        certificado = request.form.get(f'cert_{legajo_id}', '').strip()
+        if certificado:
+            c.execute("SELECT nro_legajo FROM legajos WHERE nro_certificado = ? AND id != ?", (certificado, legajo_id))
+            duplicado = c.fetchone()
+            
+            if duplicado:
+                # MENSAJE FLASH DE ERROR
+                flash(f"Error: El certificado {certificado} ya está asignado al legajo {duplicado[0]}.", "error")
+                hubo_error = True
+                continue 
+                
+            c.execute("UPDATE legajos SET nro_certificado = ?, devolucion_ba = 'sí' WHERE id = ?", (certificado, legajo_id))
+        else:
+            c.execute("UPDATE legajos SET nro_certificado = '', devolucion_ba = 'no' WHERE id = ?", (legajo_id,))
+            
     conn.commit()
     conn.close()
+    
+    # MENSAJE FLASH DE ÉXITO (solo si no hubo errores en el lote)
+    if not hubo_error:
+        flash("Los certificados se actualizaron correctamente.", "success")
+        
     return redirect(url_for('index'))
 
 @app.route('/eliminar/<int:id>')
