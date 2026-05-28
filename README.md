@@ -76,10 +76,10 @@ sistema-def/
     ├── remito_recepcion.html # Plantilla dinámica del remito de entrada
     └── remito_envio.html   # Plantilla dinámica del remito de salida (Entrega)
 ```
-## 🛠️ Requisitos e Instalación
+## Requisitos e Instalación
 1. Configurar el entorno: Asegúrate de tener Python instalado. Abre una terminal en la carpeta sistema-def.
 2. Instalar dependencias: Ejecuta el siguiente comando para instalar el motor web y el gestor de datos:
 `pip install flask pandas`
 3. Ejecutar el sistema:
 `python app.py`
-4. Acceso: Abre tu navegador de internet e ingresa a http://127.0.0.1:5000
+4. Acceso: Abre tu navegador de internet e ingresa a `http://127.0.0.1:5000`
