@@ -171,35 +171,34 @@ def generar_remito_recepcion():
     conn.close()
     return "No hay legajos pendientes de remito."
 
-@app.route('/generar_remito_envio', methods=['POST']) # Recomendado: usar 'envio' sin tilde en la URL
+@app.route('/generar_remito_envio', methods=['POST'])
 def generar_remito_envio():
-    """Filtra los legajos aprobados para el Centro Auditor y genera el remito de salida."""
-    # 1. Usar el nombre del campo que definimos en el HTML para el remito de salida
-    nuevo_nro_remito = request.form['nro_remito_envio'] 
-    archivo_firma = request.form['firmante'] 
+    """Filtra los legajos que YA tienen certificado de Bs As y genera el remito para Gas Austral."""
+    nuevo_nro_remito = request.form['nro_remito_envio']
+    archivo_firma = request.form['firmante']
     
     conn = sqlite3.connect(DB_NAME)
     
-    # 2. FILTRO CRÍTICO: Solo legajos con pase_a_definitivo='sí' que NO tengan remito de envío aún
+    # EL CAMBIO CLAVE: Buscamos legajos devueltos por BA (con certificado) que no tengan remito asignado
     df = pd.read_sql_query(
-        "SELECT * FROM legajos WHERE pase_a_definitivo='sí' AND nro_remito_envio IS NULL", 
+        "SELECT * FROM legajos WHERE devolucion_ba='sí' AND nro_remito_envio IS NULL", 
         conn
     )
     
     if not df.empty:
         c = conn.cursor()
-        # 3. ACTUALIZACIÓN: Guardar el número de remito de ENVÍO
+        # Guardamos el número de remito de entrega en la base de datos
         c.execute('''
             UPDATE legajos 
             SET nro_remito_envio = ? 
-            WHERE pase_a_definitivo='sí' AND nro_remito_envio IS NULL
+            WHERE devolucion_ba='sí' AND nro_remito_envio IS NULL
         ''', (nuevo_nro_remito,))
         conn.commit()
         
         legajos_remito = df.to_dict('records')
         conn.close()
         
-        # 4. PLANTILLA: Llamar a remito_envio.html en lugar del de recepción
+        # Generamos el documento final
         return render_template('remito_envio.html', 
                                nro_remito=nuevo_nro_remito, 
                                fecha=datetime.now().strftime("%d/%m/%Y"),
@@ -207,7 +206,7 @@ def generar_remito_envio():
                                firma_imagen=archivo_firma)
     
     conn.close()
-    return "No hay legajos con 'Pase a Definitivo' pendientes de envío."
+    return "No hay legajos con certificados registrados pendientes de entrega."
 
 @app.route('/registrar_respuesta_ba', methods=['POST'])
 def registrar_respuesta_ba():
