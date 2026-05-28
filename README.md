@@ -64,8 +64,8 @@ sistema-def/
 ├── uploads/                # Directorio de almacenamiento para PDFs técnicos
 │
 ├── static/                 # Archivos estáticos del sistema
-│   ├── 1.png               # Logo institucional UTN
-│   ├── firma_Demian.png    # Firma digitalizada general
+│   ├── 1.png               # Logo institucional Oficina Técnica
+│   ├── firma_Demian.png    # Firma digitalizada general (Demian)
 │
 └── templates/              # Plantillas e interfaces HTML (Vistas)
     ├── login.html          # Pantalla de acceso restringido
