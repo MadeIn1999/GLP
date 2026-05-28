@@ -36,22 +36,23 @@ Para entregarle a Gas Austral un remito institucional que certifique que la Ofic
 
 ### 🛠️ Paso 3: Trabajo interno y control de avance
 A medida que el equipo técnico (junto con el revisor asignado) avanza en el análisis de las instalaciones de GLP, debes mantener actualizada la tabla central (**Seguimiento Interno y Control**):
-* **Revisión / Aviso Auditoría / Firmas Insertadas:** Ve tildando las casillas según el progreso real del expediente.
+* **Revisión / Aviso Auditoría / Firmas Insertadas:** Ve tildando las casillas según el progreso real del expediente. (Puedes usar los enlaces de "📝 Llenar formulario" para agilizar las notificaciones).
 * **Corregir datos:** Si un nombre u obra se tipeó mal, haz clic en el botón azul ✏️ **Editar** al final de la fila para corregirlo.
 * **Eliminar:** Si un legajo se cargó por error, el botón rojo 🗑️ **Eliminar** borrará el registro y destruirá de forma segura sus archivos PDF del disco.
+* **Pase a Definitivo:** Una vez aprobado el control en la facultad, tilda esta opción. El expediente pasará físicamente a enviarse a Buenos Aires.
 * **¡Muy Importante!** Al finalizar cada cambio en las casillas, recuerda presionar el botón verde **Guardar Estados** abajo de la tabla para asegurar los cambios.
 
-### 🛫 Paso 4: Envío de paquetes al Centro Auditor (Buenos Aires)
-Cuando un legajo pasa todos los controles de la facultad, se tilda la casilla **Pase a Definitivo** y se guardan los cambios. Para enviar el lote de expedientes aprobados a Buenos Aires:
-1. Ve al bloque **Generar Remito de Envío**.
-2. Escribe el número de remito de salida (ej. `ENV-2026-001`) y presiona el botón.
-3. El sistema buscará de forma automática todos los legajos aprobados ("Definitivos") que aún no se hayan mandado, armará el remito de salida y estampará la firma seleccionada sobre la línea de puntos.
+### 🏁 Paso 4: Retorno de Buenos Aires y Certificación Final
+Cuando el Centro Auditor y la Secretaría de Energía devuelven el correo con los 4 documentos finales aprobados:
+1. Ve a la tabla del fondo llamada **Respuesta y Certificación (Buenos Aires)**. Allí verás los legajos que enviamos en el paso anterior.
+2. Busca el legajo correspondiente y escribe en el casillero el **Nro. de Certificado** emitido (ej. `UTN-00000/Año/404-G`).
+3. Haz clic en el botón **Registrar Certificados**. El estado cambiará automáticamente a **✅ Certificado**, habilitando el legajo para su devolución al cliente.
 
-### 🏁 Paso 5: Retorno de Buenos Aires y Certificación Final
-Cuando el Centro Auditor y la Secretaría de Energía devuelven el sobre con las aprobaciones:
-1. Ve a la tabla del fondo llamada **Respuesta y Certificación (Buenos Aires)**. Allí solo verás los legajos que ya fueron enviados en remitos de salida.
-2. Busca el legajo correspondiente y escribe en el casillero el **Nro. de Certificado** final que emitieron en Buenos Aires.
-3. Haz clic en el botón **Registrar Certificados**. El estado cambiará automáticamente a **✅ Devuelto**, indicando que el ciclo del expediente ha concluido exitosamente y la documentación está lista para ser retirada por el cliente.
+### 🛫 Paso 5: Devolución a Gas Austral (Remito de Envío)
+Para devolver la documentación final ya certificada a la empresa instaladora:
+1. Ve al bloque **Generar Remito de Envío (Centro Auditor)**.
+2. Escribe el número de remito de salida (ej. `ENV-2026-001`) y presiona el botón.
+3. El sistema buscará de forma automática todos los legajos que ya tienen su certificado cargado y armará el remito de entrega final para Gas Austral.
 
 ## 📂 Estructura del Proyecto
 
@@ -74,5 +75,11 @@ sistema-def/
     ├── editar.html         # Formulario de modificación de expedientes
     ├── remito_recepcion.html # Plantilla dinámica del remito de entrada
     └── remito_envio.html   # Plantilla dinámica del remito de salida (Entrega)
-
-
+```
+## 🛠️ Requisitos e Instalación
+1. Configurar el entorno: Asegúrate de tener Python instalado. Abre una terminal en la carpeta sistema-def.
+2. Instalar dependencias: Ejecuta el siguiente comando para instalar el motor web y el gestor de datos:
+`pip install flask pandas`
+3. Ejecutar el sistema:
+`python app.py`
+4. Acceso: Abre tu navegador de internet e ingresa a http://127.0.0.1:5000
