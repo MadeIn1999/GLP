@@ -48,19 +48,6 @@
         </form>
     </div>
 
-    <div class="formulario">
-        <h3>Generar Remito de Envío (Centro Auditor)</h3>
-        <form action="/generar_remito_envio" method="POST">
-            <input type="text" name="nro_remito_envio" placeholder="Nro de Remito de Salida" required>
-            
-            <label for="firmante_env">Firmante:</label>
-            <select name="firmante" id="firmante_env">
-                <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
-            </select>
-            
-            <button type="submit">Generar Remito de Envío</button>
-        </form>
-    </div>
 
     <h3>Seguimiento Interno y Control</h3>
     <input type="text" id="buscar_interno" placeholder="🔍 Buscar por Nro. Legajo o Nombre de Obra..." 
@@ -92,12 +79,20 @@
                     </td>
                     <td style="text-align: center;">
                         <input type="checkbox" name="aviso_{{ legajo.id }}" value="sí" {% if legajo.aviso_auditoria == 'sí' %}checked{% endif %}>
+                        <br>
+                        <a href="https://forms.office.com/r/pZ0GxBU77S" target="_blank" style="font-size: 10px; color: #007bff; text-decoration: none;">
+                            📝 Llenar formulario
+                        </a>
                     </td>
                     <td style="text-align: center;">
                         <input type="checkbox" name="firmas_{{ legajo.id }}" value="sí" {% if legajo.insercion_firmas == 'sí' %}checked{% endif %}>
                     </td>
                     <td style="text-align: center; background-color: #e8f4f8;">
                         <input type="checkbox" name="definitivo_{{ legajo.id }}" value="sí" {% if legajo.pase_a_definitivo == 'sí' %}checked{% endif %}>
+                        <br>
+                        <a href="https://forms.office.com/r/1mwkSZXEub" target="_blank" style="font-size: 10px; color: #007bff; text-decoration: none;">
+                            📝 Llenar formulario
+                        </a>
                     </td>
                     <td style="text-align: center;">
                         <a href="/editar/{{ legajo.id }}" style="color: #007bff; text-decoration: none; font-weight: bold; margin-right: 15px;">✏️ Editar</a>
@@ -112,37 +107,40 @@
     </form>
     
     <h3>Respuesta y Certificación (Buenos Aires)</h3>
-    <input type="text" id="buscar_externo" placeholder="🔍 Buscar por Nro. Legajo, Obra o Remito..." 
-       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
     <form action="/registrar_respuesta_ba" method="POST">
-        <table>
+        <input type="text" id="buscar_externo" placeholder="🔍 Buscar por Nro. Legajo, Obra o Certificado..." 
+               style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        
+        <table id="tabla_externo">
             <thead>
                 <tr>
                     <th>Nro Legajo</th>
                     <th>Obra</th>
-                    <th>Enviado en Remito</th>
-                    <th>Nro. Certificado</th>
+                    <th>Nro. Certificado (UTN-XXX/Año/404-G)</th>
                     <th>Estado BA</th>
+                    <th>Remito de Salida</th>
                 </tr>
             </thead>
             <tbody>
                 {% for legajo in legajos %}
-                {% if legajo.nro_remito_envio %}
+                {% if legajo.pase_a_definitivo == 'sí' %}
                 <tr>
                     <td>{{ legajo.nro_legajo }}</td>
                     <td>{{ legajo.nombre }}</td>
-                    <td>{{ legajo.nro_remito_envio }}</td>
                     
                     <td>
                         <input type="hidden" name="id_legajo" value="{{ legajo.id }}">
-                        <input type="text" name="cert_{{ legajo.id }}" value="{{ legajo.nro_certificado or '' }}" placeholder="Ingresar N°">
+                        <input type="text" name="cert_{{ legajo.id }}" value="{{ legajo.nro_certificado or '' }}" placeholder="Ej: UTN-00000/2026/404-G" style="width: 200px; padding: 4px;">
                     </td>
                     <td style="text-align: center;">
                         {% if legajo.devolucion_ba == 'sí' %}
-                            <span style="color: green;">✅ Devuelto</span>
+                            <span style="color: green;">✅ Certificado</span>
                         {% else %}
-                            <span style="color: orange;">⏳ Pendiente</span>
+                            <span style="color: orange;">⏳ En Buenos Aires</span>
                         {% endif %}
+                    </td>
+                    <td style="text-align: center; font-weight: bold; color: #2c3e50;">
+                        {{ legajo.nro_remito_envio or '⏳ Pendiente' }}
                     </td>
                 </tr>
                 {% endif %}
@@ -155,56 +153,71 @@
         </button>
     </form>
 
+    <div class="formulario">
+        <h3>Generar Remito de Envío (Centro Auditor)</h3>
+        <form action="/generar_remito_envio" method="POST">
+            <input type="text" name="nro_remito_envio" placeholder="Nro de Remito de Salida" required>
+            
+            <label for="firmante_env">Firmante:</label>
+            <select name="firmante" id="firmante_env">
+                <option value="Firma_Demian.png">Demian Ferreyra (General)</option>
+            </select>
+            
+            <button type="submit">Generar Remito de Envío</button>
+        </form>
+    </div>
+
     <script>
         // Función genérica para filtrar cualquier tabla en tiempo real
-    function laFuncionFiltrar(idBuscador, idTabla) {
-        const input = document.getElementById(idBuscador);
-        const tabla = document.getElementById(idTabla);
-        
-        if (!input || !tabla) return;
+        function laFuncionFiltrar(idBuscador, idTabla) {
+            const input = document.getElementById(idBuscador);
+            const tabla = document.getElementById(idTabla);
+            
+            if (!input || !tabla) return;
 
-        input.addEventListener('keyup', function() {
-            const filtro = input.value.toLowerCase();
-            // Tomamos todas las filas del cuerpo de la tabla (omitimos el encabezado thead)
-            const filas = tabla.getElementsByTxName('tbody')[0].getElementsByTxName('tr');
+            input.addEventListener('keyup', function() {
+                const filtro = input.value.toLowerCase();
+                // CORRECCIÓN: getElementsByTagName en lugar de getElementsByTxName
+                const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-            for (let i = 0; i < filas.length; i++) {
-                let coincide = false;
-                const celdas = filas[i].getElementsByTxName('td');
-                
-                // Evaluamos el texto de cada celda de la fila actual
-                for (let j = 0; j < celdas.length; j++) {
-                    // Si la celda contiene inputs (como el número de legajo o texto), leemos su valor
-                    const inputInterno = celdas[j].querySelector('input[type="text"]');
-                    let textoCelda = "";
+                for (let i = 0; i < filas.length; i++) {
+                    let coincide = false;
+                    const celdas = filas[i].getElementsByTagName('td');
                     
-                    if (inputInterno) {
-                        textoCelda = inputInterno.value;
-                    } else {
-                        textoCelda = celdas[j].textContent || celdas[j].innerText;
-                    }
+                    // Evaluamos el texto de cada celda de la fila actual
+                    for (let j = 0; j < celdas.length; j++) {
+                        const inputInterno = celdas[j].querySelector('input[type="text"]');
+                        let textoCelda = "";
+                        
+                        if (inputInterno) {
+                            textoCelda = inputInterno.value;
+                        } else {
+                            textoCelda = celdas[j].textContent || celdas[j].innerText;
+                        }
 
-                    if (textoCelda.toLowerCase().indexOf(filtro) > -1) {
-                        coincide = true;
-                        break; // Si ya coincide una celda, no hace falta seguir revisando la misma fila
+                        if (textoCelda.toLowerCase().indexOf(filtro) > -1) {
+                            coincide = true;
+                            break; 
+                        }
+                    }
+                    
+                    // Mostramos u ocultamos la fila según el resultado
+                    if (coincide) {
+                        filas[i].style.display = "";
+                    } else {
+                        filas[i].style.display = "none";
                     }
                 }
-                
-                // Mostramos u ocultamos la fila según el resultado
-                if (coincide) {
-                    filas[i].style.display = "";
-                } else {
-                    filas[i].style.display = "none";
-                }
-            }
-        });
-    }
-        // Inicializador automático para la fecha actual de carga
+            });
+        }
+        
+        // Inicializador automático para la fecha actual y los buscadores
         document.addEventListener('DOMContentLoaded', function() {
             // Vincula el buscador interno con la tabla interna
             laFuncionFiltrar('buscar_interno', 'tabla_interno');
             // Vincula el buscador externo con la tabla externa
             laFuncionFiltrar('buscar_externo', 'tabla_externo');
+            
             const fechaInput = document.getElementById('fecha_ingreso_nueva');
             if (fechaInput && !fechaInput.value) {
                 fechaInput.value = new Date().toISOString().split('T')[0];
