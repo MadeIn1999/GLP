@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, session, flash
@@ -119,6 +120,13 @@ def nuevo_legajo():
     fecha = request.form['fecha_entrada'] 
     archivo = request.files['archivo_pdf']
     
+    # 1. VALIDACIÓN: Que la fecha no sea a futuro
+    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+    hoy = datetime.now().date()
+    if fecha_ingresada > hoy:
+        flash("Error: La fecha de ingreso no puede ser posterior al día de hoy.", "error")
+        return redirect(url_for('index'))
+
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
@@ -164,6 +172,15 @@ def generar_remito_recepcion():
     nuevo_nro_remito = request.form['nuevo_nro_remito']
     archivo_firma = request.form['firmante'] # Captura el nombre del archivo de imagen seleccionado
     conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+
+    # VALIDACIÓN: Controlar que el nro de remito de recepción no exista
+    c.execute("SELECT id FROM legajos WHERE nro_remito_recepcion = ?", (nuevo_nro_remito,))
+    if c.fetchone():
+        flash(f"Error: El remito de recepción {nuevo_nro_remito} ya fue utilizado en el sistema.", "error")
+        conn.close()
+        return redirect(url_for('index'))
+
     # Filtramos con Pandas los que entraron pero no tienen remito asignado
     df = pd.read_sql_query(
         "SELECT * FROM legajos WHERE recepcion_documentos='sí' AND nro_remito_recepcion IS NULL", 
@@ -201,6 +218,14 @@ def generar_remito_envio():
     
     conn = sqlite3.connect(DB_NAME)
     
+    # VALIDACIÓN: Controlar que el nro de remito de envío no exista
+    c = conn.cursor()
+    c.execute("SELECT id FROM legajos WHERE nro_remito_envio = ?", (nuevo_nro_remito,))
+    if c.fetchone():
+        flash(f"Error: El remito de envío {nuevo_nro_remito} ya fue generado anteriormente.", "error")
+        conn.close()
+        return redirect(url_for('index'))
+
     # EL CAMBIO CLAVE: Buscamos legajos devueltos por BA (con certificado) que no tengan remito asignado
     df = pd.read_sql_query(
         "SELECT * FROM legajos WHERE devolucion_ba='sí' AND nro_remito_envio IS NULL", 
@@ -240,19 +265,37 @@ def registrar_respuesta_ba():
     
     for legajo_id in ids:
         certificado = request.form.get(f'cert_{legajo_id}', '').strip()
+        
         if certificado:
+            # 1. VALIDACIÓN ESTRUCTURAL (Formato y Año)
+            # \d{5} exige exactamente 5 números. (\d{4}) captura el año de 4 dígitos.
+            patron = r'^UTN-\d{5}/(\d{4})/404-G$'
+            match = re.match(patron, certificado)
+            
+            if not match:
+                flash(f"Error: El certificado {certificado} no respeta la estructura requerida (UTN-00000/Año/404-G).", "error")
+                hubo_error = True
+                continue
+                
+            anio_cert = int(match.group(1)) # Extrae el año que pusimos entre paréntesis
+            anio_actual = datetime.now().year
+            
+            if anio_cert < 2022 or anio_cert > anio_actual:
+                flash(f"Error: El año del certificado {certificado} debe estar entre 2022 y {anio_actual}.", "error")
+                hubo_error = True
+                continue
+
+            # 2. VALIDACIÓN DE DUPLICADO (Tu código actual)
             c.execute("SELECT nro_legajo FROM legajos WHERE nro_certificado = ? AND id != ?", (certificado, legajo_id))
             duplicado = c.fetchone()
             
             if duplicado:
-                # MENSAJE FLASH DE ERROR
                 flash(f"Error: El certificado {certificado} ya está asignado al legajo {duplicado[0]}.", "error")
                 hubo_error = True
                 continue 
                 
+            # 3. ACTUALIZACIÓN (Tu código actual)
             c.execute("UPDATE legajos SET nro_certificado = ?, devolucion_ba = 'sí' WHERE id = ?", (certificado, legajo_id))
-        else:
-            c.execute("UPDATE legajos SET nro_certificado = '', devolucion_ba = 'no' WHERE id = ?", (legajo_id,))
             
     conn.commit()
     conn.close()
