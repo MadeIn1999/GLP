@@ -236,16 +236,18 @@
         
         // Inicializador automático para la fecha actual y los buscadores
         document.addEventListener('DOMContentLoaded', function() {
-            // Vincula el buscador interno con la tabla interna
             laFuncionFiltrar('buscar_interno', 'tabla_interno');
-            // Vincula el buscador externo con la tabla externa
             laFuncionFiltrar('buscar_externo', 'tabla_externo');
             
             const fechaInput = document.getElementById('fecha_ingreso_nueva');
-            if (fechaInput && !fechaInput.value) {
-                fechaInput.value = new Date().toISOString().split('T')[0];
+            if (fechaInput) {
+                const hoy = new Date().toISOString().split('T')[0];
+                fechaInput.setAttribute('max', hoy); // Bloquea fechas futuras en el calendario visual
+                if (!fechaInput.value) {
+                    fechaInput.value = hoy;
+                }
             }
-        })
+        });
         // Hacer que los mensajes Flash desaparezcan suavemente después de 4 segundos
         setTimeout(function() {
             const flashContainer = document.getElementById('flash-container');
