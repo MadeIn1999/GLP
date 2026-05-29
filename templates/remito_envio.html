@@ -290,13 +290,12 @@
             input[type="date"].empty-date::-webkit-datetime-edit-month-field,
             input[type="date"].empty-date::-webkit-datetime-edit-day-field {
                 color: transparent;
-        }
+            }
         }
     </style>
 </head>
 <body>
     <div class="remito">
-        <!-- Header -->
         <div class="header">
             <div>
                 <div><img src="{{ url_for('static', filename='1.png') }}" alt="Logo UTN" style="max-width: 140px;"></div>
@@ -322,7 +321,6 @@
             </div>
         </div>
 
-        <!-- Datos del Cliente -->
         <div class="section">
             <div class="section-title">DATOS DEL CLIENTE</div>
             <div class="two-columns">
@@ -362,41 +360,39 @@
             </div>
         </div>
 
-        <!-- Documentación Entregada -->
         <div class="section">
             <div class="section-title">DOCUMENTACIÓN ENTREGADA</div>
             
             <div class="checkbox-list">
                 <div class="checkbox-item">
-                    <input type="checkbox" class="checkbox" id="caratula">
+                    <input type="checkbox" class="checkbox" id="caratula" checked>
                     <label for="caratula">Carátula de Expediente</label>
                 </div>
                 
                 <div class="checkbox-item">
-                    <input type="checkbox" class="checkbox" id="informe">
+                    <input type="checkbox" class="checkbox" id="informe" checked>
                     <label for="informe">Informe Final</label>
                 </div>
                 
                 <div class="checkbox-item">
-                    <input type="checkbox" class="checkbox" id="certificado">
+                    <input type="checkbox" class="checkbox" id="certificado" checked>
                     <label for="certificado">Certificado</label>
                 </div>
                 
                 <div class="checkbox-item">
-                    <input type="checkbox" class="checkbox" id="actas">
+                    <input type="checkbox" class="checkbox" id="actas" checked>
                     <label for="actas">Actas de Inspección</label>
                 </div>
                 
                 <div class="checkbox-item">
-                    <input type="checkbox" class="checkbox" id="listado">
+                    <input type="checkbox" class="checkbox" id="listado" checked>
                     <label for="listado">Listado de Verificación</label>
                 </div>
             </div>
         </div>
 
-        <!-- Detalle de Documentos -->
         <div class="section">
-            <div class="section-title">DETALLE DE DOCUMENTOS</div>
+            <div class="section-title">DETALLE DE DOCUMENTOS APROBADOS</div>
             <table class="table">
                 <thead>
                     <tr>
@@ -408,76 +404,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for legajo in legajos %}
                     <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
+                        <td><input type="text" class="table-field" value="{{ legajo.nro_legajo }}" readonly style="font-weight: bold;"></td>
+                        <td><input type="text" class="table-field" value="{{ legajo.nro_certificado }}" readonly style="font-weight: bold; color: #2c5aa0;"></td>
                         <td><input type="date" class="table-field"></td>
                         <td><input type="date" class="table-field"></td>
                         <td><input type="text" class="table-field"></td>
                     </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="date" class="table-field"></td>
-                        <td><input type="text" class="table-field"></td>
-                    </tr>
+                    {% endfor %}
+                    
                     <tr>
                         <td><input type="text" class="table-field"></td>
                         <td><input type="text" class="table-field"></td>
@@ -496,17 +432,14 @@
             </table>
         </div>
 
-        <!-- Observaciones -->
         <div class="section">
             <div class="section-title">OBSERVACIONES GENERALES</div>
             <textarea class="observations"></textarea>
         </div>
 
-        <!-- Firmas -->
         <div class="signatures">
             <div class="signature-box" style="position: relative;">
-                <img src="{{ url_for('static', filename='Firma_Demian.png') }}" alt=""
-                    alt="Firma Demian"
+                <img src="{{ url_for('static', filename=firma_imagen) }}" alt="Firma Autorizada"
                     style="position: absolute; width: 150px; top: 10px; left: 50%; transform: translateX(-50%);">
 
                 <br><br><div class="signature-line"></div>
@@ -525,7 +458,6 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             Este remito certifica la entrega de la documentación técnica correspondiente a la inspección de instalaciones de GLP<br>
             conforme a las normativas vigentes de la Secretaría de Energía y disposiciones técnicas aplicables.
@@ -537,78 +469,3 @@
         function printRemito() {
             window.print();
         }
-
-        // Botón de impresión - solo visible en pantalla
-        document.addEventListener('DOMContentLoaded', function() {
-            const printButton = document.createElement('button');
-            printButton.textContent = 'Imprimir Remito';
-            printButton.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                padding: 8px 12px;
-                background: #2c5aa0;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                z-index: 1000;
-                font-size: 11px;
-            `;
-            printButton.onclick = printRemito;
-            
-            // Solo mostrar en pantalla, nunca al imprimir
-            const showButton = () => {
-                printButton.style.display = window.matchMedia('print').matches ? 'none' : 'block';
-            };
-            
-            showButton();
-            window.addEventListener('beforeprint', () => printButton.style.display = 'none');
-            window.addEventListener('afterprint', showButton);
-            
-            document.body.appendChild(printButton);
-
-            // inicializar inputs date de la tabla para que estén "vacíos" visualmente ---
-            const tableDateInputs = document.querySelectorAll('.table input[type="date"], table input[type="date"]');
-            tableDateInputs.forEach(input => {
-                // asegurar valor vacío y marcar con clase que oculta la indicación de formato
-                input.value = '';
-                input.classList.add('empty-date');
-
-                // al cambiar el valor, quitar la clase para mostrar la fecha seleccionada
-                input.addEventListener('change', () => {
-                    if (input.value) input.classList.remove('empty-date');
-                    else input.classList.add('empty-date');
-                });
-
-                // al enfocar también quitar la clase (mejora UX al abrir calendario)
-                input.addEventListener('focus', () => input.classList.remove('empty-date'));
-                // al perder foco, si sigue vacío, volver a marcar como vacío
-                input.addEventListener('blur', () => {
-                    if (!input.value) input.classList.add('empty-date');
-                });
-            });
-        });
-
-        // Función para establecer fecha y hora actual
-        function setCurrentDateTime() {
-            const now = new Date();
-            const dateInput = document.querySelector('input[type="date"]');
-            const timeInput = document.querySelector('input[type="time"]');
-            
-            if (dateInput) {
-                dateInput.value = now.toISOString().split('T')[0];
-            }
-            
-            if (timeInput) {
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                timeInput.value = `${hours}:${minutes}`;
-            }
-        }
-
-        // Auto-completar fecha y hora al cargar
-        document.addEventListener('DOMContentLoaded', setCurrentDateTime);
-    </script>
-</body>
-</html>
